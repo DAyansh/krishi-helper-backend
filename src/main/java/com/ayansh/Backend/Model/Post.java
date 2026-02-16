@@ -41,9 +41,9 @@ public class Post {
     public <E> Post(Object o, @NotBlank String author, @NotBlank String region, @NotBlank String body, Object o1, ArrayList<E> es) {
     }
 
-    public void addImage(PostImage img){
-        images.add(img) ;
-        img.setPost(this) ;
-    }
+//    public void addImage(PostImage img){
+//        image.add(img) ;
+//        img.setPost(this) ;
+//    }
 
 }

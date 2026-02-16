@@ -1,4 +1,4 @@
-package com.ayansh.Backend.Controller;
+/*package com.ayansh.Backend.Controller;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import com.ayansh.Backend.PayLoad.CommentCreateRequestDTO;
 import com.ayansh.Backend.PayLoad.CommentResponseDTO;
 import com.ayansh.Backend.PayLoad.PostCreateRequestDTO;
 import com.ayansh.Backend.PayLoad.PostResponseDTO;
-import com.ayansh.Backend.Service.CommunityService;
+//import com.ayansh.Backend.Service.CommunityService;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/community")
 public class CommunityController {
 
-    @Autowired
-    private CommunityService communityService;
+   // @Autowired
+    //private CommunityService communityService;
 
 
-    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+ /*   @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponseDTO> createPost(
             @RequestParam String author,
             @RequestParam String region,
@@ -36,7 +36,7 @@ public class CommunityController {
             @RequestPart(name = "images", required = false) List<MultipartFile> images
     ) throws BadRequestException {
         PostCreateRequestDTO data = new PostCreateRequestDTO(author, region, body); // Assuming a constructor
-        PostResponseDTO created = communityService.createPost(data, images);
+   //     PostResponseDTO created = communityService.createPost(data, images);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -60,4 +60,4 @@ public class CommunityController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
-}
+}*/

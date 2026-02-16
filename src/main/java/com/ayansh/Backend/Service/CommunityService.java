@@ -1,4 +1,4 @@
-package com.ayansh.Backend.Service;
+/*package com.ayansh.Backend.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -120,4 +120,4 @@ public class CommunityService {
     private String getFileExtension(String filename) {
         return filename != null && filename.contains(".") ? filename.substring(filename.lastIndexOf(".")) : "";
     }
-}
+}*/
