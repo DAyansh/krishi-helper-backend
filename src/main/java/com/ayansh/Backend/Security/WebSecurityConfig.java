@@ -113,32 +113,26 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // For development - allow your frontend URL
+        // Add localhost (for development) and deployed frontend URL
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173",  // Vite default
-                "http://localhost:3000",  // React default
-                "http://localhost:8080"   // Your backend
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "https://krishi-helper-backend.onrender.com",
+                "http://localhost:8080"status
+
         ));
 
-        // For production - use specific origins
-        // config.setAllowedOrigins(List.of("https://yourdomain.com"));
-
-        config.setAllowedHeaders(List.of(
-                "Authorization",
-                "Content-Type",
-                "Accept",
-                "Origin",
-                "X-Requested-With"
-        ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        config.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin","X-Requested-With"));
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(List.of("Authorization"));
-        config.setMaxAge(3600L); // 1 hour
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 
 
 
