@@ -2,6 +2,7 @@ package com.ayansh.Backend.Security.Response;
 
 import lombok.*;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 
