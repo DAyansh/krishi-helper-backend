@@ -34,6 +34,16 @@ import java.io.IOException;
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
                 throws ServletException, IOException {
 
+            String requestURI = request.getRequestURI();
+
+            // Skip JWT validation for permitAll paths
+            if (requestURI.startsWith("/api/auth/") || requestURI.startsWith("/api/public/") ||
+                    requestURI.startsWith("/v3/api-docs/") || requestURI.startsWith("/swagger-ui/") ||
+                    requestURI.startsWith("/images/") || requestURI.equals("/")) {
+                logger.debug("Skipping JWT validation for public path: {}", requestURI);
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             logger.debug("Processing request: {} {}", request.getMethod(), request.getRequestURI());
 
