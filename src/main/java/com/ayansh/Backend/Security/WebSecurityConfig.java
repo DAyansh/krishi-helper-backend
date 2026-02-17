@@ -71,7 +71,8 @@ public class WebSecurityConfig {
                     .exceptionHandling(e->e.authenticationEntryPoint(authEntryPointJwt))
                     .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(a->a
-                            .requestMatchers("/api/auth/**").permitAll()   // in these api Spring security comes to picture , but it will by passed later .
+                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/").permitAll()   // in these api Spring security comes to picture , but it will by passed later .
                             .requestMatchers("/v3/api-docs/**").permitAll()
                           //  .requestMatchers("/api/polygons/create").permitAll()   // testing
                             .requestMatchers("/swagger-ui/**").permitAll()
