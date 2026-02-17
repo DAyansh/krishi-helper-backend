@@ -1,6 +1,6 @@
 # Multi-stage build for Spring Boot (Maven-based)
 # Stage 1: Build the application
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk AS build
 
 # Set the working directory
 WORKDIR /app
@@ -20,7 +20,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Run the application
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre
 
 # Set the working directory
 WORKDIR /app

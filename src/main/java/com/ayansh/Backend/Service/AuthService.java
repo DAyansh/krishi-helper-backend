@@ -31,26 +31,29 @@ import java.util.stream.Collectors;
 @Service
 public class AuthService {
 
-        @Autowired
+
+    @Autowired
         UserRepo userRepo;
 
         @Autowired
         PasswordEncoder passwordEncoder;
 
         @Autowired
-        RoleRepo roleRepo;
+           RoleRepo roleRepo;
 
-        @Autowired
-        AuthenticationManager authenticationManager;
+           @Autowired
+           AuthenticationManager authenticationManager;
 
-        @Autowired
-        JwtUtils jwtUtils;
+           @Autowired
+           JwtUtils jwtUtils;
 
-        private ModelMapper modelMapper;
-    @Autowired
-    private LanguageRepository languageRepository;
 
-    public ResponseEntity<?> signUp (SignUpRequest signUpRequest){
+            private ModelMapper modelMapper;
+
+            @Autowired
+            private LanguageRepository languageRepository;
+
+            public ResponseEntity<?> signUp (SignUpRequest signUpRequest){
 
             if (signUpRequest.getPassword() == null || signUpRequest.getPassword().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Password cannot be null or empty");

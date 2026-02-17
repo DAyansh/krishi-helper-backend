@@ -9,8 +9,6 @@ import java.util.List;
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
-    @Setter
     public class UserInfoResponse {
 
         private long id ;

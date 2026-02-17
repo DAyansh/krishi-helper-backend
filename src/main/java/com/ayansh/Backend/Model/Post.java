@@ -11,8 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "post")
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {

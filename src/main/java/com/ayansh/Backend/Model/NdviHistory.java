@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 @Entity
-    @Table(name = "ndvi_history")
-    @Data
+@Table(name = "ndvi_history")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

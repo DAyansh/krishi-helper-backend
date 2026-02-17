@@ -2,10 +2,13 @@ package com.ayansh.Backend.PayLoad;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Data
+
 public class PolygonRequestDTO {
     // name of polygon (required)
     private String name;

@@ -11,12 +11,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@Data
 public class User {
 
     @Id

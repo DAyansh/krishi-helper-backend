@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+
 public class PostCreateRequestDTO {
 
     @NotBlank

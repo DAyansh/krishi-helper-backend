@@ -10,8 +10,6 @@ import java.time.Instant;
 
 @Entity
 @Table(name="post_image")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostImage {

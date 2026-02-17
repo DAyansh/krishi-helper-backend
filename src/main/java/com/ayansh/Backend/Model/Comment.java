@@ -10,8 +10,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Getter
-@Setter
 @Table(name= "comment")
 public class Comment {
 

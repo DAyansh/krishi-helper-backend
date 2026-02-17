@@ -5,12 +5,12 @@ import lombok.*;
 import org.hibernate.action.internal.OrphanRemovalAction;
 
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Roles {
 
     @Id
@@ -26,4 +26,5 @@ public class Roles {
         this.roleName = roleName;
 
     }
+
 }
