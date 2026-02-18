@@ -44,7 +44,6 @@ public class WebSecurityConfig {
         return new AuthTokenFilter();
     }
 
-
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -54,75 +53,80 @@ public class WebSecurityConfig {
     }
 
     @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-            return authenticationConfiguration.getAuthenticationManager() ;
-        }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .exceptionHandling(e -> e.authenticationEntryPoint(authEntryPointJwt))
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(a -> a
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/").permitAll()   // in these api Spring security comes to picture , but it will by passed later .
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        //  .requestMatchers("/api/polygons/create").permitAll()   // testing
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/seller/**").hasAnyRole("ADMIN","SELLER")
+                        .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated());
 
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-            http.csrf(AbstractHttpConfigurer::disable)
-                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                    .exceptionHandling(e->e.authenticationEntryPoint(authEntryPointJwt))
-                    .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests(a->a
-                            .requestMatchers("/api/auth/**").permitAll()
-                            .requestMatchers("/").permitAll()   // in these api Spring security comes to picture , but it will by passed later .
-                            .requestMatchers("/v3/api-docs/**").permitAll()
-                          //  .requestMatchers("/api/polygons/create").permitAll()   // testing
-                            .requestMatchers("/swagger-ui/**").permitAll()
-                            .requestMatchers("/api/public/**").permitAll()
-                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                            .requestMatchers("/api/seller/**").hasAnyRole("ADMIN","SELLER")
-                            .requestMatchers("/api/test/**").permitAll()
-                            .requestMatchers("/images/**").permitAll()
-                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                            .anyRequest().authenticated()).oauth2Login(oauth2 -> oauth2
-                            .loginPage("/login")
-                            .defaultSuccessUrl("/home", true)
-                    ) ;
+        http.authenticationProvider(daoAuthenticationProvider());
 
-            http.authenticationProvider(daoAuthenticationProvider());
+        http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.headers(h -> h.frameOptions(
+                HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
-            http.addFilterBefore(authTokenFilter() , UsernamePasswordAuthenticationFilter.class) ;
-            http.headers(h->h.frameOptions(
-                    HeadersConfigurer.FrameOptionsConfig::sameOrigin)) ;
+        return http.build();
+    }
 
-            return http.build();
-        }
-
-        @Bean
-        public WebSecurityCustomizer webSecurityCustomizer() {
-            return (web) -> web.ignoring().requestMatchers(
-                    "/images/**",
-                    "/v2/api-docs",
-                    "/configuration/ui",
-                    "/swagger-resources/**",
-                    "/configuration/security",
-                    "/swagger-ui.html",
-                    "/webjars/**"
-            );
-        }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/images/**",
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**"
+        );
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // For development - allow your frontend URL
-        config.setAllowedOrigins(List.of(
+        // Dynamically set allowed origins: local for dev, env var for prod
+        List<String> allowedOrigins = List.of(
                 "http://localhost:5173",  // Vite default
                 "http://localhost:3000",  // React default
-                "http://localhost:8080" ,
-                "https://krishi-helper-backend.onrender.com"// Your backend
-        ));
+                "http://localhost:8080"   // Your backend local
+        );
 
-        // For production - use specific origins
-        // config.setAllowedOrigins(List.of("https://yourdomain.com"));
+        // Add production frontend URL from env var (set on Render)
+        String frontendUrl = System.getenv("FRONTEND_URL");
+        if (frontendUrl != null && !frontendUrl.isEmpty()) {
+            allowedOrigins = new java.util.ArrayList<>(allowedOrigins);
+            allowedOrigins.add(frontendUrl);
+        } else {
+            // Default to a placeholder if not set (update to your actual frontend URL)
+            allowedOrigins = new java.util.ArrayList<>(allowedOrigins);
+            allowedOrigins.add("https://your-frontend-domain.com");  // Replace with your real frontend URL
+        }
+
+        config.setAllowedOrigins(allowedOrigins);
 
         config.setAllowedHeaders(List.of(
                 "Authorization",
@@ -141,13 +145,9 @@ public class WebSecurityConfig {
         return source;
     }
 
-
-
-
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
-
-    }
+}
 
