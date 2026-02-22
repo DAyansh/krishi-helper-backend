@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-@Profile("cloudinary")
+@Profile("prod")
 public class CloudinaryFileStorageService implements FileStorageService {
 
     @Value("${cloudinary.cloud_name:}")
