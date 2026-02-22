@@ -127,6 +127,7 @@ public class CommunityService {
             }
         }
 
+        commentRepo.deleteCommentByPost(post) ;
         postRepo.delete(post);
     }
 }
