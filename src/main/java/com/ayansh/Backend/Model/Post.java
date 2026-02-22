@@ -1,10 +1,9 @@
 package com.ayansh.Backend.Model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id ;
+    private Long id;
 
     @Column(nullable = false)
     private String author;
@@ -26,22 +25,28 @@ public class Post {
     private String region;
 
     @Column(columnDefinition = "TEXT")
-    private String body ;
+    private String body;
 
-    @ElementCollection
-    @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "image_url")
-    private List<String> imageUrls;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PostImage> images = new ArrayList<>();
 
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public <E> Post(Object o, @NotBlank String author, @NotBlank String region, @NotBlank String body, Object o1, ArrayList<E> es) {
+    public Post(String author, String region, String body) {
+        this.author = author;
+        this.region = region;
+        this.body = body;
     }
 
-//    public void addImage(PostImage img){
-//        image.add(img) ;
-//        img.setPost(this) ;
-//    }
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

@@ -2,11 +2,6 @@ package com.ayansh.Backend.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.action.internal.OrphanRemovalAction;
-
-import java.util.Set;
-import java.util.prefs.Preferences;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

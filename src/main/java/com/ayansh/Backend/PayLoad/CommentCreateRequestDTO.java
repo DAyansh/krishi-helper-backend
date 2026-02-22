@@ -9,7 +9,7 @@ import lombok.*;
 public class CommentCreateRequestDTO {
 
     @NotBlank
-    private String author ;
+    private String author;
     @NotBlank
-    private String body ;
+    private String body;
 }

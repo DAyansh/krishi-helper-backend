@@ -2,7 +2,7 @@ package com.ayansh.Backend.PayLoad;
 
 import lombok.*;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,11 +14,8 @@ public class PostResponseDTO {
     private String author;
     private String region;
     private String body;
-    private Instant createdAt;
+    private LocalDateTime createdAt;
     private List<String> imageUrls;
-    private int commentCount;
+    private long commentCount;
 
-    public PostResponseDTO(long id, String author, String region, String body, Instant createdAt, List<String> imageUrls) {
-    }
 }
-

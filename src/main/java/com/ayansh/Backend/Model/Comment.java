@@ -5,29 +5,47 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "comment")
 @Data
-@Table(name= "comment")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private Long id;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Post post ;
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-    private String author ;
+    @Column(nullable = false)
+    private String author;
 
     @Column(columnDefinition = "TEXT")
-    private String body ;
+    private String body;
 
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt = Instant.now();
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public Comment(Object o, Long postId, @NotBlank String author, @NotBlank String body, Object o1) {
+    public Comment(Post post, @NotBlank String author, @NotBlank String body) {
+        this.post = post;
+        this.author = author;
+        this.body = body;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
