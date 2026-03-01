@@ -74,6 +74,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         //  .requestMatchers("/api/polygons/create").permitAll()   // testing
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/seller/**").hasAnyRole("ADMIN","SELLER")

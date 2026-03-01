@@ -3,51 +3,52 @@ package com.ayansh.Backend.Service;
 import com.ayansh.Backend.PayLoad.WeatherResponseDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WeatherAlertService {
 
+    private static final Logger log = LoggerFactory.getLogger(WeatherAlertService.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public WeatherResponseDTO parseAndGenerate(String rawJson) {
         try {
             JsonNode root = objectMapper.readTree(rawJson);
 
+            if (root.has("error")) {
+                log.warn("Weather API returned error: {}", root.path("error").asText());
+                return new WeatherResponseDTO(0.0, 0.0, 0.0, root.path("error").asText());
+            }
 
             JsonNode current = root.path("current");
-            double temperature = current.path("temp").asDouble(0.0);  // Default to 0.0 if missing
-            double humidity = current.path("humidity").asDouble(0.0);
+            double temperature    = current.path("temp").asDouble(0.0);
+            double humidity       = current.path("humidity").asDouble(0.0);
 
-            JsonNode daily = root.path("daily");
             double rainProbability = 0.0;
-            if (daily.isArray() && daily.size() > 0) {
-                rainProbability = daily.get(0).path("pop").asDouble(0.0) * 100;  // Convert to percentage
+            JsonNode daily = root.path("daily");
+            if (daily.isArray() && !daily.isEmpty()) {
+                rainProbability = daily.get(0).path("pop").asDouble(0.0) * 100.0;
             }
 
-
-            JsonNode alertsNode = root.path("alerts");
             String alerts = null;
-            if (alertsNode.isArray() && alertsNode.size() > 0) {
-
-                StringBuilder alertBuilder = new StringBuilder();
+            JsonNode alertsNode = root.path("alerts");
+            if (alertsNode.isArray() && !alertsNode.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
                 for (JsonNode alert : alertsNode) {
-                    alertBuilder.append(alert.path("description").asText()).append("; ");
+                    sb.append(alert.path("event").asText("Unknown"))
+                            .append(": ")
+                            .append(alert.path("description").asText())
+                            .append("; ");
                 }
-                alerts = alertBuilder.toString().trim();
+                alerts = sb.toString().trim();
             }
 
-
-            WeatherResponseDTO response = new WeatherResponseDTO();
-            response.setTemperature(temperature);
-            response.setHumidity(humidity);
-            response.setRainProbability(rainProbability);
-            response.setAlerts(alerts);
-            return response;
+            return new WeatherResponseDTO(temperature, humidity, rainProbability, alerts);
 
         } catch (Exception e) {
-            // Log error and return default
-            System.err.println("Error parsing weather JSON: " + e.getMessage());
+            log.error("Error parsing weather JSON", e);
             return new WeatherResponseDTO(0.0, 0.0, 0.0, null);
         }
     }

@@ -1,6 +1,7 @@
 package com.ayansh.Backend.Service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -15,11 +16,10 @@ public class WeatherService {
 
     public WeatherService(WebClient.Builder builder,
                           @Value("${openweather.api.url}") String baseUrl) {
-
         this.webClient = builder.baseUrl(baseUrl).build();
     }
 
-    @org.springframework.cache.annotation.Cacheable(value = "weather", key = "#lat + '-' + #lon")
+    @Cacheable(value = "weather", key = "#lat + '-' + #lon")
     public String fetchWeatherRaw(double lat, double lon) {
         try {
             return webClient.get()
@@ -36,9 +36,9 @@ public class WeatherService {
                     .block();
         } catch (WebClientResponseException e) {
             if (e.getStatusCode().value() == 401) {
-                return "{\"error\": \"Invalid or unactivated OpenWeatherMap API key. Please check your account and try again.\"}";
+                return "{\"error\": \"Invalid or unactivated OpenWeatherMap API key.\"}";
             }
-            throw new RuntimeException("Weather API error: " + e.getMessage(), e);
+            throw new RuntimeException("Weather API error: " + e.getStatusCode() + " - " + e.getMessage(), e);
         }
     }
 }
