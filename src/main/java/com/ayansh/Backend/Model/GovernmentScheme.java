@@ -46,7 +46,7 @@ public class GovernmentScheme {
     private LocalDateTime scrapedAt ;
     private Integer scrapeConfidence ;
 
-    private Boolean lockedByAdmin ;
+    private Boolean lockedByAdmin = true;
 
 
 }

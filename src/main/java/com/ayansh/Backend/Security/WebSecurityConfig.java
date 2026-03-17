@@ -74,10 +74,11 @@ public class WebSecurityConfig {
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         //  .requestMatchers("/api/polygons/create").permitAll()   // testing
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("api/gov/admin/**").hasRole("ADMIN")
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/seller/**").hasAnyRole("ADMIN","SELLER")
+                        //.requestMatchers("/api/seller/**").hasAnyRole("ADMIN","SELLER")
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

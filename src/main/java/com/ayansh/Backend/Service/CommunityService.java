@@ -36,6 +36,11 @@ public class CommunityService {
         this.fileStorageService = fileStorageService;
     }
 
+    private String sanitize(String value) {
+        if (value == null) return null;
+        return value.replaceAll("^\"|\"$", "").trim(); // removes surrounding quotes
+    }
+
     public Page<PostResponseDTO> listPosts(String region, Pageable pageable) {
         Page<Post> page;
         if (region != null && !region.trim().isEmpty()) {
@@ -48,7 +53,12 @@ public class CommunityService {
 
     @Transactional
     public PostResponseDTO createPost(PostCreateRequestDTO data, List<MultipartFile> images) {
-        Post post = new Post(data.getAuthor(), data.getRegion(), data.getBody());
+        //Post post = new Post(data.getAuthor(), data.getRegion(), data.getBody());
+        Post post = new Post(
+                sanitize(data.getAuthor()),
+                sanitize(data.getRegion()),
+                sanitize(data.getBody())
+        );
         post = postRepo.save(post);
 
         if (images != null && !images.isEmpty()) {
@@ -78,7 +88,8 @@ public class CommunityService {
         Post post = postRepo.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + postId));
 
-        Comment comment = new Comment(post, req.getAuthor(), req.getBody());
+        //Comment comment = new Comment(post, req.getAuthor(), req.getBody());
+        Comment comment = new Comment(post, sanitize(req.getAuthor()), sanitize(req.getBody()));
         comment = commentRepo.save(comment);
         return mapToDto(comment);
     }
